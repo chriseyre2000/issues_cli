@@ -9,7 +9,7 @@ defmodule Issues.CLI do
   table of the last _n_ issues/pull requests in a GitHub project  
   """
 
-  def run(argv) do
+  def main(argv) do
     argv
     |> parse_args
     |> process
