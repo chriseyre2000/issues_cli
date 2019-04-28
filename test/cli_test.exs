@@ -9,12 +9,16 @@ defmodule CliTest do
     assert parse_args(["--help", "anything"]) == :help
   end
 
-  test "Three values returned if three given" do
-    assert parse_args(["user", "project", "99"]) == {"user", "project", 99}
+  test "Four values returned if three given" do
+    assert parse_args(["user", "project", "issues"]) == {"user", "project", "issues", 4}
   end
 
-  test "Count is defaulted if two given" do
-    assert parse_args(["user", "project"]) == {"user", "project", 4}
+  test "Four values returned if four given" do
+    assert parse_args(["user", "project", "pulls", "99"]) == {"user", "project", "pulls", 99}
+  end
+
+  test "Count and type are defaulted if two given" do
+    assert parse_args(["user", "project"]) == {"user", "project", "issues", 4}
   end
 
   test "sort into ascending order the correct way" do

@@ -2,10 +2,11 @@ defmodule Issues.CLI do
   import Issues.TableFormatter, only: [print_table_for_columns: 2]
 
   @default_count 4
+  @default_type "issues"
   @moduledoc """
   Handle the command line parsing and dispatch to 
   the various functions that end up generating a
-  table of the last _n_ issues in a GitHub project  
+  table of the last _n_ issues/pull requests in a GitHub project  
   """
 
   def run(argv) do
@@ -20,7 +21,7 @@ defmodule Issues.CLI do
   Otherwise it is a github username, project name, and
   (optionally) the number of entries to format.
   
-  Return a tuple of `{user, project, count}` or :help if help was
+  Return a tuple of `{user, project, type, count}` or :help if help was
   given.
   """
   def parse_args(argv) do
@@ -29,10 +30,13 @@ defmodule Issues.CLI do
     case parse do
       { [ help: true], _, _ } 
         -> :help
-      { _, [user, project, count], _}
-        -> {user, project, count |> String.to_integer()}
-      { _, [user, project], _ }
-        -> {user, project, @default_count}
+      { _, [user, project, type, count], _}
+        -> {user, project, type, count |> String.to_integer()}
+      { _, [user, project, type], _ }
+        -> {user, project, type, @default_count}
+      {_, [user, project], _} 
+        -> {user, project, @default_type, @default_count}
+
       _ -> :help
     end
   end
@@ -45,8 +49,8 @@ defmodule Issues.CLI do
     System.halt(0)
   end
 
-  def process({user, project, count}) do
-    Issues.GithubIssues.fetch(user, project)
+  def process({user, project, type, count}) do
+    Issues.GithubIssues.fetch(user, project, type)
     |> decode_response
     |> sort_into_ascending_order
     |> Enum.take(count)
