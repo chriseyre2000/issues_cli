@@ -11,10 +11,10 @@ defmodule Issues.GithubIssues do
   defp issues_url(user, project), do: "#{@github_url}/repos/#{user}/#{project}/issues"
 
   defp handle_response({:ok, %{status_code: 200, body: body}}) do
-    {:ok, Poison.Parser.parse!(body)}
+    {:ok, Poison.Parser.parse!(body, %{})}
   end
 
   defp handle_response({_, %{status_code: _, body: body}}) do
-    {:error, Poison.Parser.parse!(body)}
+    {:error, Poison.Parser.parse!(body, %{})}
   end
 end
